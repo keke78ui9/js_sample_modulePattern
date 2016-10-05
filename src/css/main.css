@@ -1,0 +1,4 @@
+div#displayPanel {
+    height: 100px;
+    overflow: scroll;
+}
