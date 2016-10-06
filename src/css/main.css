@@ -2,3 +2,7 @@ div#displayPanel {
     height: 100px;
     overflow: scroll;
 }
+
+textarea#jsonTextArea {
+    height: 80%;
+}

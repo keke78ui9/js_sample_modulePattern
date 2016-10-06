@@ -1,49 +1,39 @@
-(function(){
+(function(_json, _cache, undefined){
+    
     'strict'
-    var JSON_FORMAT_INDENT = 4,
+    var 
         jsonTextArea = document.getElementById("jsonTextArea"),
         actionButton = document.getElementById("actionButton"),
         minifyButton = document.getElementById("minifyButton"),
         displayPanel = document.getElementById("displayPanel")
         ;
 
-    function isJson(val) {
-        try {
-            return JSON.parse(val);
-        } catch (error) {
-            console.info(error);
-            panel("Error: " + error);
-        }
-    };
-
-    function beautifyJson() {
-            var jsonVal = jsonTextArea.value;
-            if (jsonVal) {
-                
-                    // check if value is json or not
-                    var json = isJson(jsonVal);
-                    if (json){
-                        // beautifyJson
-                        jsonTextArea.value = JSON.stringify(json, null, JSON_FORMAT_INDENT);
-                        panel("TOTAL: " + jsonTextArea.value.length);
-                    }
-            }
-    };
-
-    function minifyJson() {
-        var jsonVal = jsonTextArea.value;
-        if (!jsonVal) {
+    function prettyFormat() {
+        if (!jsonTextArea.value) {
             return;
         }
 
-        // check if value is json or not
-        var json = isJson(jsonVal);
-        if (!json) {
+        var result = _json.beautifyJson(jsonTextArea.value);
+        if (result.flg) {
+            jsonTextArea.value = result.value;
+        }
+        else {
+            panel("Error => " + result.error);
+        }
+    };
+
+    function minify() {
+        if (!jsonTextArea.value) {
             return;
         }
-
-        jsonTextArea.value = JSON.stringify(json, null, 0);
-        panel("TOTAL: " + jsonTextArea.value.length);
+        var result = _json.minifyJson(jsonTextArea.value);
+        if (result.flg) {
+            jsonTextArea.value = result.value;
+             _cache.store(result.value);
+        }
+        else {
+            panel("Error => " + result.error);
+        }
     }
 
     function panel(message) {
@@ -55,9 +45,9 @@
 
     function init() {
        // register events
-        actionButton.onclick = beautifyJson;
-        minifyButton.onclick = minifyJson;
+        actionButton.onclick = prettyFormat;
+        minifyButton.onclick = minify;
     }
 
-init();
-})();
+    init();
+})(jsonBeautify, jsCache);
